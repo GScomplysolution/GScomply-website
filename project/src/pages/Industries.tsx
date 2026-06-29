@@ -30,7 +30,7 @@ export default function Industries() {
             Compliance Expertise Across Every Industry
           </h1>
           <p className="text-lg text-white/85 max-w-3xl mx-auto leading-relaxed">
-            Product compliance requirements vary significantly by industry. GS Comply Solutions brings sector-specific regulatory knowledge and proven methodologies to help businesses in every industry meet their obligations — efficiently and proactively.
+            Product compliance requirements vary significantly by industry. GS Comply Solutions brings sector-specific regulatory knowledge and proven methodologies to help businesses in every industry meet their compliance obligations.
           </p>
         </div>
       </section>
@@ -141,10 +141,10 @@ export default function Industries() {
                 Why Industry-Specific Compliance Matters
               </h2>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Different industries face fundamentally different compliance landscapes. An automotive supplier managing IMDS submissions and GADSL declarations faces completely different challenges from a consumer goods manufacturer navigating REACH SVHC notifications, Proposition 65, and the General Product Safety Regulation.
+                Different industries face fundamentally different compliance landscapes. An automotive supplier managing IMDS submissions and GADSL declarations faces completely different challenges than a consumer goods manufacturer managing GPSR and toy safety obligations.
               </p>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Generic compliance advice misses the industry-specific nuances that determine whether a compliance program actually works in practice. The substance thresholds that apply, the platforms through which data must be exchanged, the format of required declarations, and the enforcement mechanisms all vary by industry.
+                Generic compliance advice misses the industry-specific nuances that determine whether a compliance program actually works in practice. The substance thresholds that apply, the platforms you must use, and the submission formats vary dramatically by sector.
               </p>
               <p className="text-gs-slate leading-relaxed">
                 GS Comply Solutions builds compliance programs from the ground up with your specific industry, products, supply chain, and markets in mind — not retrofitted from a one-size-fits-all template.
