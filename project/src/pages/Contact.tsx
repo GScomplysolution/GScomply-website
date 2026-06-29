@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { Mail, Phone, Clock, CheckCircle, ChevronDown, Loader2, Linkedin } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { sendContactFormNotification } from '../lib/emailService';
 
 const industries = [
   'Automotive', 'Electronics & Electrical', 'Consumer Products & Household',
@@ -14,19 +15,19 @@ const companySizes = ['1–50 employees', '51–200 employees', '201–1,000 emp
 const faqs = [
   {
     q: 'What is the difference between REACH and RoHS compliance?',
-    a: 'REACH (Regulation EC 1907/2006) is a broad chemicals regulation covering substances in mixtures and articles across all industries, requiring registration, evaluation, authorization, and restriction of chemicals. RoHS (Directive 2011/65/EU) is a specific directive restricting 10 named hazardous substances in electrical and electronic equipment (EEE) and requires CE marking. While both cover hazardous substance restrictions, REACH has a much broader scope — covering all product types, not just EEE — and includes additional obligations like SVHC declaration and SCIP database notification that RoHS does not.',
+    a: 'REACH (Regulation EC 1907/2006) is a broad chemicals regulation covering substances in mixtures and articles across all industries, requiring registration, evaluation, authorization, and restriction of chemicals. It applies to any organization placing chemicals or products containing chemicals on the EU market. RoHS (Restriction of Hazardous Substances) is a narrower directive targeting specific hazardous substances (lead, mercury, cadmium, hexavalent chromium, PBBs, PBDEs) in electrical and electronic equipment. REACH is substance-focused; RoHS is product category-focused. Most companies must comply with both if they serve EU markets.',
   },
   {
     q: 'How long does it take to complete a REACH SVHC declaration?',
-    a: 'The timeline for REACH SVHC declarations depends on the complexity of your product portfolio and supply chain. For a single product with a clear bill of materials, a supplier SVHC declaration can be completed in 1–2 weeks. For a complex product portfolio requiring systematic supply chain data collection from multiple suppliers, a comprehensive SVHC screening program typically takes 4–12 weeks depending on supplier response rates. GS Comply Solutions offers both rapid-response declaration support and systematic portfolio screening programs to match your timeline requirements.',
+    a: 'The timeline for REACH SVHC declarations depends on the complexity of your product portfolio and supply chain. For a single product with a clear bill of materials, a supplier SVHC declaration can be completed in 3–7 days. For complex multi-material assemblies or products with multiple sub-suppliers, timelines can extend to 2–4 weeks. GS Comply Solutions typically completes SVHC declarations within 1–2 weeks, depending on the complexity of your product portfolio and the responsiveness of your supply chain for substance data.',
   },
   {
     q: 'Do I need to submit to the SCIP database if I\'m not an EU company?',
-    a: 'Yes — the SCIP notification obligation applies to any company placing articles on the EU market, regardless of where the company is headquartered. If you manufacture in Asia, North America, or elsewhere and export articles to EU customers or distributors, and those articles contain SVHCs above 0.1% w/w, you are required to submit SCIP notifications to ECHA. The obligation is triggered by placing articles on the EU market, not by the location of the manufacturer.',
+    a: 'Yes — the SCIP notification obligation applies to any company placing articles on the EU market, regardless of where the company is headquartered. If you manufacture in Asia, North America, or elsewhere but sell products into the EU, SCIP obligations apply to you. The SCIP database is designed to track articles containing SVHC substances so that EU authorities and downstream users can access this information. Importers, distributors, and manufacturers all have SCIP notification obligations for in-scope articles.',
   },
   {
     q: 'What substances are restricted under California Proposition 65?',
-    a: 'California Proposition 65 currently lists over 800 chemicals known to cause cancer, birth defects, or other reproductive harm. Key substances of concern for manufacturers include: lead and lead compounds, cadmium compounds, mercury, benzene, formaldehyde, acrylamide (from certain manufacturing and food processes), phthalates (DEHP, DBP, BBP), bisphenol A (BPA), and many others. OEHHA adds new chemicals throughout the year — in 2024-2025, significant additions included titanium dioxide (airborne, respirable particles) and certain PFAS substances. Businesses must assess their products against the complete current list and provide warnings where consumer exposures exceed established thresholds.',
+    a: 'California Proposition 65 currently lists over 800 chemicals known to cause cancer, birth defects, or other reproductive harm. Key substances of concern for manufacturers include: lead and lead compounds, cadmium, hexavalent chromium, phthalates (DEHP, DBP, BBP, DIBP), and various pesticides. Prop 65 applies to any product sold in California, regardless of where the product is manufactured. Non-compliance can result in significant penalties and private right of action lawsuits from consumers.',
   },
   {
     q: 'Can GS Comply Solutions help with both IMDS and SCIP submissions?',
@@ -61,16 +62,20 @@ export default function Contact() {
     };
 
     try {
+      // Save to Supabase
       const { error } = await supabase.from('contact_submissions').insert(submission);
       if (error) throw error;
 
-      // Fire-and-forget EmailJS if configured — non-blocking
+      // Send email to user (fire-and-forget)
       const svcId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const tplId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const pubKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
       if (svcId && tplId && pubKey && !svcId.startsWith('YOUR_')) {
         emailjs.sendForm(svcId, tplId, formRef.current, pubKey).catch(() => null);
       }
+
+      // Send admin notification (fire-and-forget)
+      sendContactFormNotification(submission).catch(() => null);
 
       setStatus('success');
       formRef.current.reset();

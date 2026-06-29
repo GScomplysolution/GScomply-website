@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, Linkedin, Twitter, ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { sendNewsletterNotification } from '../lib/emailService';
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -12,10 +13,15 @@ function NewsletterForm() {
     if (!email) return;
     setStatus('loading');
     try {
+      // Save to Supabase
       const { error } = await supabase
         .from('newsletter_subscribers')
         .upsert({ email }, { onConflict: 'email' });
       if (error) throw error;
+
+      // Send admin notification (fire-and-forget)
+      sendNewsletterNotification(email).catch(() => null);
+
       setStatus('success');
       setEmail('');
     } catch {
