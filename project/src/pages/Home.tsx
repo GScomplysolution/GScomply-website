@@ -190,12 +190,12 @@ export default function Home() {
               {
                 icon: <Globe size={28} className="text-gs-green" />,
                 title: 'Global Regulatory Coverage',
-                body: 'We support compliance across 10+ major global regulations and frameworks, keeping your products market-ready in the EU, US, China, and beyond. Our team stays current with every regulatory update so you don\'t have to.',
+                body: 'We support compliance across 10+ major global regulations and frameworks, keeping your products market-ready in the EU, US, China, and beyond. Our team stays current with emerging regulatory changes.',
               },
               {
                 icon: <Shield size={28} className="text-gs-green" />,
                 title: 'Risk Mitigation Expertise',
-                body: 'Avoid costly penalties, product recalls, and market bans with proactive compliance strategies tailored to your supply chain. We identify gaps before regulators do — protecting your business and your brand.',
+                body: 'Avoid costly penalties, product recalls, and market bans with proactive compliance strategies tailored to your supply chain. We identify gaps before regulators do — protecting your business.',
               },
               {
                 icon: <BarChart size={28} className="text-gs-green" />,
@@ -239,7 +239,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm text-gs-slate leading-relaxed mb-5">
-                Comprehensive substance compliance services covering REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65, CLP, POPs, and WEEE. From initial substance screening through platform submissions and ongoing regulatory monitoring.
+                Comprehensive substance compliance services covering REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65, CLP, POPs, and WEEE. From initial substance screening through platform submissions and regulatory documentation.
               </p>
               <div className="flex flex-wrap gap-2 mb-5">
                 {['REACH', 'RoHS', 'PFAS', 'GADSL', 'ELV', 'TSCA', 'Prop 65', 'WEEE', 'CLP', 'POPs'].map((reg) => (
@@ -263,7 +263,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm text-gs-slate leading-relaxed mb-5">
-                Full Life Cycle Assessments, Product Carbon Footprint calculations, Environmental Product Declarations, and CSRD/Scope 3 reporting support — helping businesses quantify and reduce their environmental impact.
+                Full Life Cycle Assessments, Product Carbon Footprint calculations, Environmental Product Declarations, and CSRD/Scope 3 reporting support — helping businesses quantify and reduce environmental impact.
               </p>
               <div className="flex flex-wrap gap-2 mb-5">
                 {['Full LCA', 'Product PCF', 'EPD Preparation', 'Scope 3 Reporting', 'CSRD / ESRS', 'Carbon Strategy'].map((svc) => (
@@ -312,9 +312,9 @@ export default function Home() {
           </div>
           <div className="space-y-6">
             {[
-              { icon: <Target size={24} className="text-gs-green" />, title: 'Large Enterprises & OEMs', body: 'Managing compliance across dozens of product lines, multiple markets, and thousands of suppliers requires a systematic approach. We provide enterprise-grade compliance management, from IMDS data governance to multi-regulation substance screening programs. Our team integrates seamlessly with your existing ERP and PLM systems to deliver compliance data where you need it.' },
-              { icon: <Users size={24} className="text-gs-green" />, title: 'Mid-Size Manufacturers', body: 'You need compliance without the overhead of a full in-house team. GS Comply Solutions acts as your dedicated compliance department — handling declarations, submissions, and regulatory monitoring at a fraction of the cost of hiring specialist staff. We scale our support up or down to match your project pipeline and seasonal demands.' },
-              { icon: <Leaf size={24} className="text-gs-green" />, title: 'Suppliers & SMEs', body: 'Your customers are asking for compliance documentation and you need expert help fast. We guide small and mid-size suppliers through every requirement, from REACH SVHC declarations to RoHS conformance statements and IMDS MDS submissions. Our experience with customer portals and data formats means we speak your customer\'s compliance language.' },
+              { icon: <Target size={24} className="text-gs-green" />, title: 'Large Enterprises & OEMs', body: 'Managing compliance across dozens of product lines, multiple markets, and thousands of suppliers requires expertise and scale. We provide both.' },
+              { icon: <Users size={24} className="text-gs-green" />, title: 'Mid-Size Manufacturers', body: 'You need compliance without the overhead of a full in-house team. GS Comply Solutions extends your capabilities with expert support.' },
+              { icon: <Leaf size={24} className="text-gs-green" />, title: 'Suppliers & SMEs', body: 'Your customers are asking for compliance documentation and you need expert help fast. We guide you from documentation to submission.' },
             ].map(({ icon, title, body }) => (
               <div key={title} className="flex gap-6 p-6 rounded-xl bg-white hover:bg-gs-light transition-colors border border-gs-border">
                 <div className="w-12 h-12 bg-gs-light rounded-xl flex items-center justify-center flex-shrink-0">{icon}</div>
@@ -337,11 +337,11 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.slice(0, 3).map((post) => (
-              <BlogCard key={post.slug} title={post.title} excerpt={post.excerpt} category={post.category} author={post.author} date={post.date} readTime={post.readTime} slug={post.slug} tags={post.tags} image={post.image} />
+              <BlogCard key={post.slug} title={post.title} excerpt={post.excerpt} category={post.category} author={post.author} date={post.date} readTime={post.readTime} slug={post.slug} tags={post.tags} />
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link to="/insights" className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gs-green text-gs-green font-semibold rounded-lg hover:bg-gs-green hover:text-white transition-all duration-200">
+            <Link to="/insights" className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gs-green text-gs-green font-semibold rounded-lg hover:bg-gs-green hover:text-white transition-colors">
               View All Insights <ArrowRight size={18} />
             </Link>
           </div>

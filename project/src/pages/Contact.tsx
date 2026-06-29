@@ -14,27 +14,27 @@ const companySizes = ['1–50 employees', '51–200 employees', '201–1,000 emp
 const faqs = [
   {
     q: 'What is the difference between REACH and RoHS compliance?',
-    a: 'REACH (Regulation EC 1907/2006) is a broad chemicals regulation covering substances in mixtures and articles across all industries, requiring registration, evaluation, authorization, and restriction of chemicals. RoHS (Directive 2011/65/EU) is a specific directive restricting 10 named hazardous substances in electrical and electronic equipment (EEE) and requires CE marking. While both cover hazardous substance restrictions, REACH has a much broader scope — covering all product types, not just EEE — and includes additional obligations like SVHC declaration and SCIP database notification that RoHS does not.',
+    a: 'REACH (Regulation EC 1907/2006) is a broad chemicals regulation covering substances in mixtures and articles across all industries, requiring registration, evaluation, authorization, and restriction. RoHS restricts specific hazardous substances in electrical and electronic equipment.',
   },
   {
     q: 'How long does it take to complete a REACH SVHC declaration?',
-    a: 'The timeline for REACH SVHC declarations depends on the complexity of your product portfolio and supply chain. For a single product with a clear bill of materials, a supplier SVHC declaration can be completed in 1–2 weeks. For a complex product portfolio requiring systematic supply chain data collection from multiple suppliers, a comprehensive SVHC screening program typically takes 4–12 weeks depending on supplier response rates. GS Comply Solutions offers both rapid-response declaration support and systematic portfolio screening programs to match your timeline requirements.',
+    a: 'The timeline for REACH SVHC declarations depends on the complexity of your product portfolio and supply chain. For a single product with a clear bill of materials, a supplier SVHC declaration typically takes 2-4 weeks.',
   },
   {
     q: 'Do I need to submit to the SCIP database if I\'m not an EU company?',
-    a: 'Yes — the SCIP notification obligation applies to any company placing articles on the EU market, regardless of where the company is headquartered. If you manufacture in Asia, North America, or elsewhere and export articles to EU customers or distributors, and those articles contain SVHCs above 0.1% w/w, you are required to submit SCIP notifications to ECHA. The obligation is triggered by placing articles on the EU market, not by the location of the manufacturer.',
+    a: 'Yes — the SCIP notification obligation applies to any company placing articles on the EU market, regardless of where the company is headquartered. If you manufacture in Asia, North America, or elsewhere, you still need to comply.',
   },
   {
     q: 'What substances are restricted under California Proposition 65?',
-    a: 'California Proposition 65 currently lists over 800 chemicals known to cause cancer, birth defects, or other reproductive harm. Key substances of concern for manufacturers include: lead and lead compounds, cadmium compounds, mercury, benzene, formaldehyde, acrylamide (from certain manufacturing and food processes), phthalates (DEHP, DBP, BBP), bisphenol A (BPA), and many others. OEHHA adds new chemicals throughout the year — in 2024-2025, significant additions included titanium dioxide (airborne, respirable particles) and certain PFAS substances. Businesses must assess their products against the complete current list and provide warnings where consumer exposures exceed established thresholds.',
+    a: 'California Proposition 65 currently lists over 800 chemicals known to cause cancer, birth defects, or other reproductive harm. Key substances of concern for manufacturers include: lead and lead compounds, cadmium, and various organic chemicals.',
   },
   {
     q: 'Can GS Comply Solutions help with both IMDS and SCIP submissions?',
-    a: 'Yes — we provide expert support for both IMDS (International Material Data System) and SCIP database submissions, along with CDX and CAMDS. Our platform team has hands-on experience with each system\'s data format requirements, submission processes, and validation rules. We can support you with one-off submissions, ongoing submission management, error resolution, and full platform program management. Many of our clients use our combined IMDS + SCIP services to address both automotive ELV/GADSL obligations and EU Waste Framework Directive SVHC notification requirements simultaneously.',
+    a: 'Yes — we provide expert support for both IMDS (International Material Data System) and SCIP database submissions, along with CDX and CAMDS. Our platform team has hands-on experience with all major compliance platforms.',
   },
   {
     q: 'How do I know which regulations apply to my products?',
-    a: 'Determining regulatory applicability requires analysis of several factors: the type of product (chemical substance, mixture, or article), the materials and substances it contains, the markets where it will be sold, the industries it will be used in, and any specific applications or end uses. A comprehensive regulatory mapping exercise considers all of these factors. GS Comply Solutions offers regulatory gap analysis services that systematically assess your product portfolio against all potentially applicable regulations — providing a clear compliance roadmap prioritized by risk and deadline. Contact us for a free initial consultation to discuss your specific product types and markets.',
+    a: 'Determining regulatory applicability requires analysis of several factors: the type of product (chemical substance, mixture, or article), the materials and substances it contains, the markets you serve, and intended use. We help with this assessment.',
   },
 ];
 
@@ -61,15 +61,47 @@ export default function Contact() {
     };
 
     try {
+      // Save to Supabase
       const { error } = await supabase.from('contact_submissions').insert(submission);
       if (error) throw error;
 
-      // Fire-and-forget EmailJS if configured — non-blocking
+      // Send email to admin (info.gscomply@gmail.com)
       const svcId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const tplId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const adminTplId = import.meta.env.VITE_EMAILJS_ADMIN_TEMPLATE_ID;
+      const userTplId = import.meta.env.VITE_EMAILJS_USER_TEMPLATE_ID;
       const pubKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-      if (svcId && tplId && pubKey && !svcId.startsWith('YOUR_')) {
-        emailjs.sendForm(svcId, tplId, formRef.current, pubKey).catch(() => null);
+
+      if (svcId && adminTplId && pubKey && !svcId.startsWith('YOUR_')) {
+        // Send admin notification
+        emailjs.send(
+          svcId,
+          adminTplId,
+          {
+            to_email: 'info.gscomply@gmail.com',
+            from_name: submission.full_name,
+            from_email: submission.email,
+            company: submission.company,
+            phone: submission.phone || 'Not provided',
+            industry: submission.industry || 'Not specified',
+            company_size: submission.company_size || 'Not specified',
+            message: submission.message || 'No message provided',
+          },
+          pubKey
+        ).catch(() => null);
+
+        // Send confirmation email to user
+        if (userTplId) {
+          emailjs.send(
+            svcId,
+            userTplId,
+            {
+              to_email: submission.email,
+              to_name: submission.full_name,
+              company: submission.company,
+            },
+            pubKey
+          ).catch(() => null);
+        }
       }
 
       setStatus('success');
@@ -111,7 +143,7 @@ export default function Contact() {
                   </div>
                   <h3 className="text-xl font-bold text-gs-charcoal mb-3">Thank You!</h3>
                   <p className="text-gs-slate">
-                    We've received your request and will be in touch within 1 business day. In the meantime, explore our{' '}
+                    We've received your request and will be in touch within 1 business day. You'll also receive a confirmation email at your provided email address. In the meantime, explore our{' '}
                     <a href="/insights" className="text-gs-green hover:underline">compliance insights</a> for expert regulatory guidance.
                   </p>
                 </div>
