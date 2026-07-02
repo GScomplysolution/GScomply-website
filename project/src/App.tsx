@@ -27,6 +27,23 @@ const LoadingSpinner = () => (
   </div>
 );
 
+// 404 Not Found Page
+const NotFound = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gs-gray">
+    <div className="text-center max-w-md px-4">
+      <div className="text-6xl font-extrabold text-gs-green mb-4">404</div>
+      <h1 className="text-2xl font-bold text-gs-charcoal mb-2">Page Not Found</h1>
+      <p className="text-gs-slate mb-8">The page you're looking for doesn't exist or has been moved.</p>
+      <a 
+        href="/" 
+        className="inline-flex items-center gap-2 px-6 py-3 bg-gs-green text-white font-semibold rounded-lg hover:bg-gs-emerald transition-colors"
+      >
+        ← Back to Home
+      </a>
+    </div>
+  </div>
+);
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -48,6 +65,8 @@ export default function App() {
               <Route path="/insights/:slug" element={<InsightPost />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              {/* Catch-all for undefined routes */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </main>
