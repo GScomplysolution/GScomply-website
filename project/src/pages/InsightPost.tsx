@@ -1,6 +1,8 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Calendar, Clock, ArrowLeft, Linkedin, Twitter, Link2 } from 'lucide-react';
 import BlogCard from '../components/BlogCard';
+import SEO, { generateArticleStructuredData, generateBreadcrumbStructuredData } from '../components/SEO';
+import NotFound from './NotFound';
 import blogPosts from '../data/blogPosts';
 
 function renderContent(content: string) {
@@ -79,11 +81,18 @@ export default function InsightPost() {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
 
-  if (!post) return <Navigate to="/insights" replace />;
+  if (!post) return <NotFound />;
 
   const related = blogPosts.filter((p) => p.slug !== slug && (p.category === post.category || p.relatedRegulation === post.relatedRegulation)).slice(0, 3);
   const headings = getH2Headings(post.content);
   const formatted = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const articleSchema = generateArticleStructuredData(post);
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Insights', path: '/insights' },
+    { name: post.title, path: `/insights/${post.slug}` },
+  ]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href).catch(() => {});
@@ -91,6 +100,20 @@ export default function InsightPost() {
 
   return (
     <>
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        keywords={post.tags.join(', ')}
+        canonicalPath={`/insights/${post.slug}`}
+        type="article"
+        image={post.image}
+        publishedTime={post.date}
+        author={post.author}
+        section={post.category}
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero */}
       <section className="py-16 md:py-20" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

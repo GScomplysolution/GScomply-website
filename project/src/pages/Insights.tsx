@@ -1,9 +1,72 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Loader2 } from 'lucide-react';
 import BlogCard from '../components/BlogCard';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import blogPosts from '../data/blogPosts';
+import { supabase } from '../lib/supabase';
 
 const categories = ['All', 'Regulations', 'Platform Guides', 'Industry News', 'Best Practices'];
+
+function InsightsNewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('newsletter_subscribers')
+        .upsert({ email }, { onConflict: 'email' });
+      if (dbError) throw dbError;
+
+      // Send emails via Resend edge function
+      await supabase.functions.invoke('email-sender', {
+        body: {
+          type: 'newsletter',
+          data: { email, source: 'Insights Page' },
+        },
+      });
+
+      setStatus('success');
+      setEmail('');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="flex items-center gap-2 text-sm text-gs-green">
+        <CheckCircle size={16} />
+        <span>Subscribed! Check your inbox.</span>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        placeholder="Your email address"
+        className="w-full px-3 py-2.5 text-sm border border-gs-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gs-green/30"
+        aria-label="Email for newsletter"
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="w-full py-2.5 bg-gs-green text-white text-sm font-medium rounded-lg hover:bg-gs-emerald transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+      >
+        {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : 'Subscribe'}
+      </button>
+    </form>
+  );
+}
 
 export default function Insights() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -12,8 +75,21 @@ export default function Insights() {
     ? blogPosts
     : blogPosts.filter((p) => p.category === activeCategory);
 
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Insights', path: '/insights' },
+  ]);
+
   return (
     <>
+      <SEO
+        title="Compliance Insights & Regulatory Updates"
+        description="Expert analysis on REACH, RoHS, PFAS, IMDS, SCIP and other regulatory developments. Stay ahead of global product compliance changes with our compliance insights."
+        keywords="compliance blog, regulatory news, REACH updates, RoHS guidance, PFAS regulations, IMDS tips, compliance best practices"
+        canonicalPath="/insights"
+        type="website"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Hero */}
       <section className="py-20 md:py-28" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -118,20 +194,7 @@ export default function Insights() {
               <div className="bg-gs-light rounded-xl p-5 border border-gs-border">
                 <h3 className="text-sm font-bold text-gs-charcoal mb-2">Get Regulatory Updates in Your Inbox</h3>
                 <p className="text-xs text-gs-slate mb-4">Expert compliance news, regulation alerts, and practical guides — delivered to you.</p>
-                <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="w-full px-3 py-2.5 text-sm border border-gs-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gs-green/30"
-                    aria-label="Email for newsletter"
-                  />
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 bg-gs-green text-white text-sm font-medium rounded-lg hover:bg-gs-emerald transition-colors"
-                  >
-                    Subscribe
-                  </button>
-                </form>
+                <InsightsNewsletterForm />
                 <p className="text-xs text-gs-slate mt-2">No spam. Unsubscribe anytime.</p>
               </div>
 

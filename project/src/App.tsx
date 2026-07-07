@@ -1,57 +1,125 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, Link, LinkProps } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import NotFound from './pages/NotFound';
 
-const Home = lazy(() => import('./pages/Home'));
-const Industries = lazy(() => import('./pages/Industries'));
-const IndustryDetail = lazy(() => import('./pages/IndustryDetail'));
-const Services = lazy(() => import('./pages/Services'));
-const ServiceDetail = lazy(() => import('./pages/ServiceDetail'));
-const PlatformDetail = lazy(() => import('./pages/PlatformDetail'));
-const LcaPcf = lazy(() => import('./pages/LcaPcf'));
-const Insights = lazy(() => import('./pages/Insights'));
-const InsightPost = lazy(() => import('./pages/InsightPost'));
-const About = lazy(() => import('./pages/About'));
-const Contact = lazy(() => import('./pages/Contact'));
+// Lazy load all pages
+const pageLoaders = {
+  Home: () => import('./pages/Home'),
+  Industries: () => import('./pages/Industries'),
+  IndustryDetail: () => import('./pages/IndustryDetail'),
+  Services: () => import('./pages/Services'),
+  ServiceDetail: () => import('./pages/ServiceDetail'),
+  PlatformDetail: () => import('./pages/PlatformDetail'),
+  LcaPcf: () => import('./pages/LcaPcf'),
+  Insights: () => import('./pages/Insights'),
+  InsightPost: () => import('./pages/InsightPost'),
+  About: () => import('./pages/About'),
+  Contact: () => import('./pages/Contact'),
+};
 
-const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gs-gray">
-    <div className="text-center">
-      <div className="w-12 h-12 border-4 border-gs-green border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-      <p className="text-gs-slate text-sm">Loading...</p>
+const Home = lazy(pageLoaders.Home);
+const Industries = lazy(pageLoaders.Industries);
+const IndustryDetail = lazy(pageLoaders.IndustryDetail);
+const Services = lazy(pageLoaders.Services);
+const ServiceDetail = lazy(pageLoaders.ServiceDetail);
+const PlatformDetail = lazy(pageLoaders.PlatformDetail);
+const LcaPcf = lazy(pageLoaders.LcaPcf);
+const Insights = lazy(pageLoaders.Insights);
+const InsightPost = lazy(pageLoaders.InsightPost);
+const About = lazy(pageLoaders.About);
+const Contact = lazy(pageLoaders.Contact);
+
+// Track preloaded modules
+const preloadedModules = new Set<string>();
+
+export type PageName = keyof typeof pageLoaders;
+
+// Prefetch a page without rendering it
+export const prefetchPage = (pageName: PageName) => {
+  if (!preloadedModules.has(pageName)) {
+    preloadedModules.add(pageName);
+    pageLoaders[pageName]().catch(() => preloadedModules.delete(pageName));
+  }
+};
+
+// Minimal inline loading indicator
+const PageLoader = () => (
+  <div className="fixed inset-x-0 top-0 z-50 pointer-events-none">
+    <div className="h-0.5 bg-gs-gray overflow-hidden">
+      <div className="h-full bg-gs-green animate-pulse" style={{ width: '60%' }} />
     </div>
   </div>
 );
 
-// 404 Not Found Page
-const NotFound = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gs-gray">
-    <div className="text-center max-w-md px-4">
-      <div className="text-6xl font-extrabold text-gs-green mb-4">404</div>
-      <h1 className="text-2xl font-bold text-gs-charcoal mb-2">Page Not Found</h1>
-      <p className="text-gs-slate mb-8">The page you're looking for doesn't exist or has been moved.</p>
-      <a 
-        href="/" 
-        className="inline-flex items-center gap-2 px-6 py-3 bg-gs-green text-white font-semibold rounded-lg hover:bg-gs-emerald transition-colors"
-      >
-        ← Back to Home
-      </a>
-    </div>
-  </div>
-);
+// Prefetch Link - prefetches on hover or focus
+export function PrefetchLink({
+  to,
+  hoverPrefetch = true,
+  children,
+  ...props
+}: Omit<LinkProps, 'to' | 'prefetch'> & { to: string; hoverPrefetch?: boolean }) {
+  const pageMap: Record<string, keyof typeof pageLoaders> = {
+    '/': 'Home',
+    '/industries': 'Industries',
+    '/services': 'Services',
+    '/insights': 'Insights',
+    '/about': 'About',
+    '/contact': 'Contact',
+  };
+
+  const handleHover = () => {
+    if (hoverPrefetch && pageMap[to]) {
+      prefetchPage(pageMap[to]);
+    }
+  };
+
+  return (
+    <Link to={to} {...props} onMouseEnter={handleHover} onFocus={handleHover}>
+      {children}
+    </Link>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  // Track navigation for smooth transitions
+  useEffect(() => {
+    setIsNavigating(true);
+    const timer = setTimeout(() => setIsNavigating(false), 150);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  // Preload critical pages after initial render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      prefetchPage('Services');
+      prefetchPage('Industries');
+      prefetchPage('Contact');
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <>
       <ScrollToTop />
+      {isNavigating && <PageLoader />}
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1 pt-24">
-          <Suspense fallback={<LoadingSpinner />}>
+          <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/industries" element={<Industries />} />
@@ -65,15 +133,21 @@ export default function App() {
               <Route path="/insights/:slug" element={<InsightPost />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              {/* Catch-all for undefined routes */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </main>
         <Footer />
       </div>
-      <Analytics />
-      <SpeedInsights />
-    </BrowserRouter>
+    </>
+  );
+}
+
+// Minimal fallback for initial lazy load
+function PageFallback() {
+  return (
+    <div className="min-h-[50vh] flex items-center justify-center">
+      <div className="w-8 h-8 border-3 border-gs-green border-t-transparent rounded-full animate-spin" />
+    </div>
   );
 }

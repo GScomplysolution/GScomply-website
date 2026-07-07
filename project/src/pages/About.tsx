@@ -1,17 +1,18 @@
-import { Target, Users, Leaf, Eye, CheckCircle, Linkedin } from 'lucide-react';
+import { Target, Users, Leaf, Eye, CheckCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 import CTABanner from '../components/CTABanner';
 import services from '../data/services';
-
-const team = [
-  { name: 'Compliance Director', title: 'Head of Regulatory Affairs', initials: 'CD' },
-  { name: 'Substance Specialist', title: 'REACH & RoHS Expert', initials: 'SS' },
-  { name: 'Platform Manager', title: 'IMDS & SCIP Lead', initials: 'PM' },
-  { name: 'LCA Consultant', title: 'Sustainability & PCF Analyst', initials: 'LC' },
-];
 
 export default function About() {
   return (
     <>
+      <SEO
+        title="About Us"
+        description="GS Comply Solutions is a team of regulatory experts helping businesses navigate product compliance worldwide. Learn about our mission, values, and commitment to compliance excellence."
+        keywords="compliance consulting team, regulatory experts, product compliance company, REACH RoHS consultants, sustainability advisors"
+        canonicalPath="/about"
+        type="website"
+      />
       {/* Hero */}
       <section className="py-20 md:py-28" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -37,13 +38,13 @@ export default function About() {
                 Born from a Passion for Compliance Excellence
               </h2>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Founded with a mission to demystify product compliance, GS Comply Solutions brings together regulatory experts, data specialists, and industry veterans to deliver compliance solutions that work in the real world.
+                Founded with a mission to demystify product compliance, GS Comply Solutions brings together regulatory experts, data specialists, and industry veterans to deliver compliance solutions that protect your business and accelerate your market access. We understand that compliance is not just a legal obligation it's a strategic advantage.
               </p>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Our team has supported companies across automotive, electronics, consumer goods, chemicals, and industrial manufacturing in meeting their obligations under the world's most demanding regulatory frameworks.
+                Our team has supported companies across automotive, electronics, consumer goods, chemicals, and industrial manufacturing in meeting their obligations under the world's most demanding regulatory frameworks REACH, RoHS, PFAS, TSCA, ELV, and more.
               </p>
               <p className="text-gs-slate leading-relaxed">
-                We believe that every company, regardless of size, deserves access to expert compliance guidance. That's why we serve everyone from global OEMs managing thousands of supplier relationships to small manufacturers building their first compliance program.
+                We believe that every company, regardless of size, deserves access to expert compliance guidance. That's why we serve everyone from global OEMs managing thousands of supplier relationships to small suppliers receiving their first SVHC declaration request. Our approach is always practical, clear, and tailored to your specific situation.
               </p>
             </div>
             <div className="relative h-80 rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
@@ -69,7 +70,7 @@ export default function About() {
               </div>
               <h3 className="text-xl font-bold text-gs-charcoal mb-4">Our Mission</h3>
               <p className="text-gs-slate leading-relaxed">
-                To empower businesses worldwide with the compliance knowledge, tools, and support they need to operate responsibly and competitively in global markets. We simplify complexity, reduce risk, and help our clients build compliance programs that scale.
+                To empower businesses worldwide with the compliance knowledge, tools, and support they need to operate responsibly and competitively in global markets. We simplify complexity, reduce risk, and help our clients turn regulatory obligations into strategic advantages.
               </p>
             </div>
             <div className="bg-white rounded-2xl p-8 border-l-4 border-gs-mint shadow-gs-card">
@@ -78,7 +79,7 @@ export default function About() {
               </div>
               <h3 className="text-xl font-bold text-gs-charcoal mb-4">Our Vision</h3>
               <p className="text-gs-slate leading-relaxed">
-                A world where regulatory compliance is not a barrier but a competitive advantage that drives sustainable business growth. We envision global supply chains where substance data flows transparently and businesses compete on compliance excellence.
+                A world where regulatory compliance is not a barrier but a competitive advantage that drives sustainable business growth. We envision global supply chains where substance data flows transparently, hazardous materials are systematically eliminated, and product compliance supports rather than hinders innovation.
               </p>
             </div>
           </div>
@@ -109,7 +110,7 @@ export default function About() {
               {
                 icon: <Leaf size={24} className="text-gs-green" />,
                 title: 'Sustainability',
-                body: 'Compliance that supports a healthier planet. We believe responsible business and environmental stewardship go hand in hand and that eliminating hazardous substances creates a better future.',
+                body: 'Compliance that supports a healthier planet. We believe responsible business and environmental stewardship go hand in hand and that eliminating hazardous substances creates better products for everyone.',
               },
               {
                 icon: <Eye size={24} className="text-gs-green" />,

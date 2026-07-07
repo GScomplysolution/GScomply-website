@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Car, Factory, Wind, Cpu, ShoppingBag, Plane, Building2, Box, CheckCircle } from 'lucide-react';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
 import industries from '../data/industries';
 
@@ -17,9 +18,22 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function Industries() {
   const primary = industries.slice(0, 5);
   const additional = industries.slice(5);
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Industries', path: '/industries' },
+  ]);
 
   return (
     <>
+      <SEO
+        title="Industries We Serve"
+        description="Industry-specific compliance services for automotive, electronics, aerospace, medical devices, construction and more. Expert regulatory support tailored to your sector's requirements."
+        keywords="automotive compliance, electronics RoHS, aerospace REACH, medical device regulations, construction material compliance, industrial compliance services"
+        canonicalPath="/industries"
+        type="website"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero */}
       <section className="py-20 md:py-28" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -30,7 +44,7 @@ export default function Industries() {
             Compliance Expertise Across Every Industry
           </h1>
           <p className="text-lg text-white/85 max-w-3xl mx-auto leading-relaxed">
-            Product compliance requirements vary significantly by industry. GS Comply Solutions brings sector-specific regulatory knowledge and proven methodologies to help businesses in every industry meet their compliance obligations.
+            Product compliance requirements vary significantly by industry. GS Comply Solutions brings sector-specific regulatory knowledge and proven methodologies to help businesses in every industry meet their obligations — efficiently and proactively.
           </p>
         </div>
       </section>
@@ -141,10 +155,10 @@ export default function Industries() {
                 Why Industry-Specific Compliance Matters
               </h2>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Different industries face fundamentally different compliance landscapes. An automotive supplier managing IMDS submissions and GADSL declarations faces completely different challenges than a consumer goods manufacturer managing GPSR and toy safety obligations.
+                Different industries face fundamentally different compliance landscapes. An automotive supplier managing IMDS submissions and GADSL declarations faces completely different challenges from a consumer goods manufacturer navigating REACH SVHC notifications, Proposition 65, and the General Product Safety Regulation.
               </p>
               <p className="text-gs-slate leading-relaxed mb-5">
-                Generic compliance advice misses the industry-specific nuances that determine whether a compliance program actually works in practice. The substance thresholds that apply, the platforms you must use, and the submission formats vary dramatically by sector.
+                Generic compliance advice misses the industry-specific nuances that determine whether a compliance program actually works in practice. The substance thresholds that apply, the platforms through which data must be exchanged, the format of required declarations, and the enforcement mechanisms all vary by industry.
               </p>
               <p className="text-gs-slate leading-relaxed">
                 GS Comply Solutions builds compliance programs from the ground up with your specific industry, products, supply chain, and markets in mind — not retrofitted from a one-size-fits-all template.

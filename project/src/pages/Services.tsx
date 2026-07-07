@@ -4,6 +4,7 @@ import {
   ArrowRight, CheckCircle, Shield, Leaf, Globe, Mail, Target, Users,
   Car, Factory, Wind, Cpu, ShoppingBag, Plane, Heart, Building2, Box, Shirt,
 } from 'lucide-react';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
 import services from '../data/services';
 import platforms from '../data/platforms';
@@ -92,6 +93,11 @@ const sustainabilityServices = [
 export default function Services() {
   const [activeIndustry, setActiveIndustry] = useState<string | null>(null);
 
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+  ]);
+
   const filteredServices = activeIndustry
     ? (() => {
         const ind = industries.find((i) => i.slug === activeIndustry);
@@ -102,6 +108,15 @@ export default function Services() {
 
   return (
     <>
+      <SEO
+        title="Compliance Services"
+        description="Complete product and material compliance services: REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65 and more. IMDS & SCIP platform submissions. LCA & PCF sustainability services."
+        keywords="compliance services, REACH compliance, RoHS compliance, PFAS screening, IMDS submissions, SCIP database, product compliance consulting, substance regulations"
+        canonicalPath="/services"
+        type="website"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero */}
       <section className="py-20 md:py-28" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

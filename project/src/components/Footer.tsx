@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, Linkedin, Twitter, ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { sendNewsletterNotification } from '../lib/emailService';
+import { prefetchPage } from '../App';
+import type { PageName } from '../App';
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -13,14 +14,19 @@ function NewsletterForm() {
     if (!email) return;
     setStatus('loading');
     try {
-      // Save to Supabase
-      const { error } = await supabase
+      // Save to database
+      const { error: dbError } = await supabase
         .from('newsletter_subscribers')
         .upsert({ email }, { onConflict: 'email' });
-      if (error) throw error;
+      if (dbError) throw dbError;
 
-      // Send admin notification (fire-and-forget)
-      sendNewsletterNotification(email).catch(() => null);
+      // Send emails via Resend edge function
+      await supabase.functions.invoke('email-sender', {
+        body: {
+          type: 'newsletter',
+          data: { email, source: 'Footer' },
+        },
+      });
 
       setStatus('success');
       setEmail('');
@@ -33,7 +39,7 @@ function NewsletterForm() {
     return (
       <div className="flex items-center gap-2 text-xs text-gs-mint">
         <CheckCircle size={14} />
-        Subscribed! Thank you.
+        Subscribed! Check your inbox for confirmation.
       </div>
     );
   }
@@ -72,7 +78,9 @@ export default function Footer() {
             <Link to="/" className="inline-block mb-4">
               <img
                 src="/images/GScomply_Logo.jpeg"
-                alt="GS Comply Solutions"
+                alt="GS Comply Solutions - Global Product Compliance Services"
+                loading="lazy"
+                decoding="async"
                 className="h-20 w-auto object-contain bg-white rounded-lg px-3 py-2"
                 style={{ maxWidth: '240px' }}
               />
@@ -106,18 +114,24 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {[
-                { to: '/', label: 'Home' },
-                { to: '/industries', label: 'Industries' },
-                { to: '/services', label: 'Services' },
-                { to: '/services/lca-pcf', label: 'LCA & PCF' },
-                { to: '/services#platforms', label: 'Platforms' },
-                { to: '/insights', label: 'Insights' },
-                { to: '/about', label: 'About Us' },
-                { to: '/contact', label: 'Contact' },
-              ].map(({ to, label }) => (
+              {(
+                [
+                  { to: '/', label: 'Home', page: 'Home' },
+                  { to: '/industries', label: 'Industries', page: 'Industries' },
+                  { to: '/services', label: 'Services', page: 'Services' },
+                  { to: '/services/lca-pcf', label: 'LCA & PCF', page: 'LcaPcf' },
+                  { to: '/services#platforms', label: 'Platforms', page: 'Services' },
+                  { to: '/insights', label: 'Insights', page: 'Insights' },
+                  { to: '/about', label: 'About Us', page: 'About' },
+                  { to: '/contact', label: 'Contact', page: 'Contact' },
+                ] satisfies { to: string; label: string; page: PageName }[]
+              ).map(({ to, label, page }) => (
                 <li key={to}>
-                  <Link to={to} className="text-sm text-gray-400 hover:text-gs-mint transition-colors flex items-center gap-1.5">
+                  <Link
+                    to={to}
+                    onMouseEnter={() => prefetchPage(page)}
+                    className="text-sm text-gray-400 hover:text-gs-mint transition-colors flex items-center gap-1.5"
+                  >
                     <ArrowRight size={12} />
                     {label}
                   </Link>

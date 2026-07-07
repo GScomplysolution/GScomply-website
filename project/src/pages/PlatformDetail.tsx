@@ -1,6 +1,8 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowRight, ChevronRight, CheckCircle, Globe, Database, Car, Package } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ChevronRight, Globe, Database, Car, Package } from 'lucide-react';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
+import NotFound from './NotFound';
 import platforms from '../data/platforms';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -21,18 +23,36 @@ export default function PlatformDetail() {
   const { slug } = useParams<{ slug: string }>();
   const platform = platforms.find((p) => p.slug === slug);
 
-  if (!platform) return <Navigate to="/services#platforms" replace />;
+  if (!platform) return <NotFound />;
 
   const coverImage = coverImages[slug || ''] || 'https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg?auto=compress&cs=tinysrgb&w=1920';
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: 'Platforms', path: '/services#platforms' },
+    { name: platform.acronym, path: `/platforms/${platform.slug}` },
+  ]);
 
   return (
     <>
+      <SEO
+        title={`${platform.acronym} - ${platform.name}`}
+        description={`${platform.description} Expert ${platform.acronym} support from GS Comply Solutions.`}
+        keywords={`${platform.acronym}, ${platform.name}, platform submissions, ${platform.industry}, data management`}
+        canonicalPath={`/platforms/${platform.slug}`}
+        type="service"
+        image={coverImage}
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero with Cover Image */}
       <section className="py-20 md:py-28 relative overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={coverImage}
             alt={platform.name}
+            loading="eager"
+            fetchPriority="high"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(26, 107, 60, 0.95) 0%, rgba(15, 74, 42, 0.9) 100%)' }} />

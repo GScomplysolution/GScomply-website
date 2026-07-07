@@ -1,6 +1,8 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, ArrowRight, ChevronRight, Car, Factory, Wind, Cpu, ShoppingBag, Plane, Building2, Box } from 'lucide-react';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
+import NotFound from './NotFound';
 import industries from '../data/industries';
 import services from '../data/services';
 
@@ -19,12 +21,26 @@ export default function IndustryDetail() {
   const { slug } = useParams<{ slug: string }>();
   const industry = industries.find((i) => i.slug === slug);
 
-  if (!industry) return <Navigate to="/industries" replace />;
+  if (!industry) return <NotFound />;
 
   const relatedServices = services.filter((s) => industry.keyRegulationSlugs.includes(s.slug));
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Industries', path: '/industries' },
+    { name: industry.name, path: `/industries/${industry.slug}` },
+  ]);
 
   return (
     <>
+      <SEO
+        title={`${industry.name} Compliance Services`}
+        description={industry.shortDescription}
+        keywords={`${industry.name.toLowerCase()} compliance, ${industry.keyRegulations.join(', ').toLowerCase()}, industry regulations`}
+        canonicalPath={`/industries/${industry.slug}`}
+        type="service"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero */}
       <section className="py-20 md:py-28 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="absolute inset-0 opacity-10">

@@ -32,6 +32,8 @@ export default function BlogCard({ title, excerpt, category, author, date, readT
         <img
           src={displayImage}
           alt={title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -47,6 +49,9 @@ export default function BlogCard({ title, excerpt, category, author, date, readT
           {title}
         </h3>
         <p className="text-sm text-gs-slate leading-relaxed mb-4 line-clamp-2 flex-1">{excerpt}</p>
+        <p className="text-xs text-gs-slate mb-4">
+          By <span className="font-medium text-gs-charcoal">{author}</span>
+        </p>
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">

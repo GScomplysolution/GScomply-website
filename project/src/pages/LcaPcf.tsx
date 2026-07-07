@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { RefreshCw, BarChart, FileText, TrendingDown, Globe, Database, BookOpen, ClipboardList, CheckCircle, ArrowRight } from 'lucide-react';
+import SEO, { generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
 import lcaServices from '../data/lcaServices';
 
@@ -15,8 +16,23 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export default function LcaPcf() {
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: 'LCA & PCF', path: '/services/lca-pcf' },
+  ]);
+
   return (
     <>
+      <SEO
+        title="Life Cycle Assessment (LCA) & Product Carbon Footprint (PCF) Services"
+        description="ISO 14044-compliant LCA and GHG Protocol-aligned PCF calculations. Support for CSRD Scope 3 reporting, EPD programs, and OEM carbon footprint requirements."
+        keywords="LCA, life cycle assessment, PCF, product carbon footprint, ISO 14044, ISO 14067, GHG Protocol, CSRD, EPD, carbon footprint, sustainability reporting"
+        canonicalPath="/services/lca-pcf"
+        type="service"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       {/* Hero */}
       <section className="py-20 md:py-28" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

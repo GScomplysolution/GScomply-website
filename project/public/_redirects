@@ -1,0 +1,7 @@
+# SPA fallback for Netlify.
+# Prerendered routes (see scripts/prerender-meta.ts) are served as real static
+# files and take priority over this rule automatically. This only catches
+# routes that have no prerendered snapshot (e.g. unknown/removed slugs), so
+# React Router can mount client-side and show the proper NotFound page
+# instead of a raw Netlify 404.
+/*    /index.html   200

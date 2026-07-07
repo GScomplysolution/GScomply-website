@@ -97,7 +97,7 @@ For electronics and consumer goods manufacturers, CDX facilitates RoHS and REACH
     dataType: 'Material composition, hazardous substance declarations per Chinese standards',
     managedBy: 'China Automotive Technology and Research Center (CATARC)',
     icon: 'Globe',
-    whatItDoes: `CAMDS (China Automotive Material Data System) is the Chinese counterpart to IMDS, developed by the China Automotive Technology and Research Center (CATARC) in alignment with China\'s vehicle end-of-life regulations and GB standards. As Chinese automotive OEMs have globalized and Chinese regulations have tightened, CAMDS has become a mandatory compliance platform for suppliers serving the Chinese automotive market.
+    whatItDoes: `CAMDS (China Automotive Material Data System) is the Chinese counterpart to IMDS, developed by the China Automotive Technology and Research Center (CATARC) in alignment with China's vehicle end-of-life regulations and GB standards. As Chinese automotive OEMs have globalized and Chinese regulations have tightened, CAMDS has become a mandatory compliance platform for suppliers serving the Chinese automotive market.
 
 CAMDS is aligned with the Chinese ELV regulation (GB/T 30512-2016) which restricts lead, mercury, cadmium, hexavalent chromium, PBB, and PBDE in vehicles mirroring EU ELV restricted substances. Like IMDS, CAMDS uses a hierarchical Material Data Sheet structure, but applies Chinese substance classification standards and threshold values which can differ from their EU equivalents.
 

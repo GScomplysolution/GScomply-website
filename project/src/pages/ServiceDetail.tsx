@@ -1,7 +1,9 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, ArrowRight, ChevronRight, AlertTriangle } from 'lucide-react';
+import SEO, { generateServiceStructuredData, generateBreadcrumbStructuredData } from '../components/SEO';
 import CTABanner from '../components/CTABanner';
 import RegulationCard from '../components/RegulationCard';
+import NotFound from './NotFound';
 import services from '../data/services';
 
 
@@ -9,12 +11,27 @@ export default function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
   const service = services.find((s) => s.slug === slug);
 
-  if (!service) return <Navigate to="/services" replace />;
+  if (!service) return <NotFound />;
 
   const related = services.filter((s) => service.relatedSlugs.includes(s.slug)).slice(0, 3);
+  const serviceSchema = generateServiceStructuredData(service);
+  const breadcrumbSchema = generateBreadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: service.acronym, path: `/services/${service.slug}` },
+  ]);
 
   return (
     <>
+      <SEO
+        title={`${service.acronym} - ${service.name}`}
+        description={service.description}
+        keywords={`${service.acronym}, ${service.name}, compliance, ${service.region}, regulations`}
+        canonicalPath={`/services/${service.slug}`}
+        type="service"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Hero */}
       <section className="py-20 md:py-28 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A6B3C 0%, #0F4A2A 100%)' }}>
         <div className="absolute inset-0 opacity-10">

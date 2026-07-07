@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Menu, X, ChevronDown, ArrowRight, ArrowUpRight } from 'lucide-react';
 import industries from '../data/industries';
+import { prefetchPage } from '../App';
 
 type DropdownKey = 'services' | 'industries' | null;
 type ServiceCategory = 'compliance' | 'sustainability' | 'platforms' | 'training';
@@ -127,17 +128,19 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0" onClick={closeAll}>
-            <img src="/images/GScomply_Logo.jpeg" alt="GS Comply Solutions Logo" className="h-20 w-auto object-contain" style={{ maxWidth: '260px' }} />
+            <img src="/images/GScomply_Logo.jpeg" alt="GS Comply Solutions - Global Product Compliance Services" loading="eager" fetchPriority="high" className="h-20 w-auto object-contain" style={{ maxWidth: '260px' }} />
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-7">
-            <NavLink to="/" className={navLinkClass} end>Home</NavLink>
+            <NavLink to="/" className={navLinkClass} end onMouseEnter={() => prefetchPage('Home')}>Home</NavLink>
 
             {/* Industries */}
-            <div onMouseEnter={() => handleEnter('industries')} onMouseLeave={handleLeave}>
+            <div onMouseEnter={() => { handleEnter('industries'); prefetchPage('Industries'); }} onMouseLeave={handleLeave}>
               <Link
                 to="/industries"
+                aria-haspopup="true"
+                aria-expanded={activeDropdown === 'industries'}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors duration-200 ${activeDropdown === 'industries' ? 'text-gs-green' : 'text-gs-charcoal hover:text-gs-green'}`}
               >
                 Industries
@@ -146,9 +149,11 @@ export default function Navbar() {
             </div>
 
             {/* Services */}
-            <div onMouseEnter={() => handleEnter('services')} onMouseLeave={handleLeave}>
+            <div onMouseEnter={() => { handleEnter('services'); prefetchPage('Services'); }} onMouseLeave={handleLeave}>
               <Link
                 to="/services"
+                aria-haspopup="true"
+                aria-expanded={activeDropdown === 'services'}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors duration-200 ${activeDropdown === 'services' ? 'text-gs-green' : 'text-gs-charcoal hover:text-gs-green'}`}
               >
                 Services
@@ -156,9 +161,9 @@ export default function Navbar() {
               </Link>
             </div>
 
-            <NavLink to="/insights" className={navLinkClass}>Insights</NavLink>
-            <NavLink to="/about" className={navLinkClass}>About</NavLink>
-            <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
+            <NavLink to="/insights" className={navLinkClass} onMouseEnter={() => prefetchPage('Insights')}>Insights</NavLink>
+            <NavLink to="/about" className={navLinkClass} onMouseEnter={() => prefetchPage('About')}>About</NavLink>
+            <NavLink to="/contact" className={navLinkClass} onMouseEnter={() => prefetchPage('Contact')}>Contact</NavLink>
           </div>
 
           {/* CTA + mobile toggle */}
@@ -173,6 +178,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               className="lg:hidden p-2 rounded-lg text-gs-charcoal hover:bg-gs-gray transition-colors"
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
             >
               {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -180,7 +186,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ── INDUSTRIES DROPDOWN ── */}
+      {/* INDUSTRIES DROPDOWN */}
       {activeDropdown === 'industries' && (
         <div
           className="hidden lg:block absolute left-0 right-0 bg-white border-t border-gs-border shadow-xl z-40"
@@ -210,7 +216,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ── SERVICES MEGA MENU (Certivo-style 3-panel) ── */}
+      {/* SERVICES MEGA MENU */}
       {activeDropdown === 'services' && (
         <div
           className="hidden lg:block absolute left-0 right-0 bg-white border-t border-gs-border shadow-xl z-40"
@@ -299,7 +305,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ── MOBILE MENU ── */}
+      {/* MOBILE MENU */}
       {isOpen && (
         <div className="lg:hidden border-t border-gs-border bg-white pb-4">
           <div className="py-3 space-y-0.5">
@@ -311,6 +317,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobileExpanded(mobileExpanded === 'industries' ? null : 'industries')}
+                aria-expanded={mobileExpanded === 'industries'}
                 className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gs-charcoal hover:bg-gs-gray rounded-lg"
               >
                 Industries
@@ -318,7 +325,7 @@ export default function Navbar() {
               </button>
               {mobileExpanded === 'industries' && (
                 <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-gs-light pl-3">
-                  <Link to="/industries" onClick={closeAll} className="block py-2 text-xs text-gs-green font-semibold">All Industries →</Link>
+                  <Link to="/industries" onClick={closeAll} className="block py-2 text-xs text-gs-green font-semibold">All Industries</Link>
                   {industries.map((ind) => (
                     <Link key={ind.slug} to={`/industries/${ind.slug}`} onClick={closeAll} className="block py-2 text-xs text-gs-charcoal hover:text-gs-green">
                       {ind.name}
@@ -332,6 +339,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobileExpanded(mobileExpanded === 'services' ? null : 'services')}
+                aria-expanded={mobileExpanded === 'services'}
                 className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gs-charcoal hover:bg-gs-gray rounded-lg"
               >
                 Services
@@ -339,7 +347,7 @@ export default function Navbar() {
               </button>
               {mobileExpanded === 'services' && (
                 <div className="ml-4 mt-1 border-l-2 border-gs-light pl-3 space-y-0.5">
-                  <Link to="/services" onClick={closeAll} className="block py-2 text-xs text-gs-green font-semibold">All Services →</Link>
+                  <Link to="/services" onClick={closeAll} className="block py-2 text-xs text-gs-green font-semibold">All Services</Link>
                   <p className="pt-2 pb-1 text-xs font-bold text-gs-slate uppercase tracking-wide">Compliance</p>
                   {[...categoryItems.compliance[0], ...categoryItems.compliance[1]].map((item) => (
                     <Link key={item.label} to={item.href} onClick={closeAll} className="block py-1.5 text-xs text-gs-charcoal hover:text-gs-green">{item.label}</Link>
