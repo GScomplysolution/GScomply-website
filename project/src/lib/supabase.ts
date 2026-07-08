@@ -3,7 +3,32 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  // Don't let a missing/misconfigured env var crash the entire site.
+  // createClient() throws synchronously if either value is falsy, and this
+  // module is imported by Footer.tsx (rendered on every page), so an
+  // unguarded throw here would white-screen the whole app on every route —
+  // not just the contact/newsletter forms that actually need Supabase.
+  //
+  // If you're seeing this in your deployment logs, the environment variables
+  // aren't set for this environment. On Vercel: Project → Settings →
+  // Environment Variables → add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+  // for Production (and Preview, if you test PRs), then redeploy. See
+  // .env.example in the project root for the expected variable names.
+  console.error(
+    '[supabase] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are missing. ' +
+    'Set them in your hosting provider\'s environment variables and redeploy. ' +
+    'Contact form and newsletter signup will not work until this is fixed.'
+  );
+}
+
+// Fall back to harmless placeholder values so createClient() never throws.
+// Any actual request made with these will fail gracefully (caught by the
+// try/catch in each form's submit handler) instead of crashing on load.
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key'
+);
 
 export type UserRole = 'admin' | 'editor' | 'viewer';
 
