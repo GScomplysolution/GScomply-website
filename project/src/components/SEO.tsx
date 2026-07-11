@@ -17,7 +17,7 @@ export interface SEOProps {
 }
 
 const SITE_NAME = 'GS Comply Solutions';
-const SITE_URL = 'https://gscomply.com';
+const SITE_URL = 'https://gscomply.vercel.app';
 const DEFAULT_IMAGE = '/images/GScomply_Logo.jpeg';
 
 function setMeta(property: string, content: string, attr: 'name' | 'property' = 'name') {
@@ -231,7 +231,7 @@ export function generateLocalBusinessStructuredData() {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     name: SITE_NAME,
-    url: SITE_URL,
+    url: SITE_URL,        
     logo: `${SITE_URL}/images/GScomply_Logo.jpeg`,
     description: 'Product and material compliance consulting services for manufacturers worldwide.',
     telephone: '+91-70103-72791',
