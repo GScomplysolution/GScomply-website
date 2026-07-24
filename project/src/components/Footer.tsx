@@ -165,9 +165,9 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Contact Us</h3>
             <ul className="space-y-3 mb-6">
               <li>
-                <a href="mailto:info.gscomply@gmail.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
+                <a href="mailto:support.gscomply.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
                   <Mail size={14} className="flex-shrink-0 text-gs-mint" />
-                  info.gscomply@gmail.com
+                  support.gscomply.com
                 </a>
               </li>
               <li>
