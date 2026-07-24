@@ -160,7 +160,7 @@ export default function Contact() {
                         name="company"
                         type="text"
                         required
-                        placeholder="Acme Corporation"
+                        placeholder="Gscomply solutions"
                         className="w-full px-4 py-2.5 border border-gs-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gs-green/30 focus:border-gs-green"
                       />
                     </div>
@@ -247,7 +247,7 @@ export default function Contact() {
                   {status === 'error' && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
                       Something went wrong. Please try again or email us at{' '}
-                      <a href="mailto:info.gscomply@gmail.com" className="font-semibold underline">info.gscomply@gmail.com</a>
+                      <a href="mailto:support@gscomply.com" className="font-semibold underline">support@gscomply.com</a>
                     </div>
                   )}
 
@@ -275,13 +275,13 @@ export default function Contact() {
                 <h3 className="text-base font-bold text-gs-charcoal mb-5">Contact Information</h3>
                 <ul className="space-y-4">
                   <li>
-                    <a href="mailto:info.gscomply@gmail.com" className="flex items-start gap-3 group">
+                    <a href="mailto:support@gscomply.com" className="flex items-start gap-3 group">
                       <div className="w-9 h-9 bg-gs-light rounded-lg flex items-center justify-center flex-shrink-0">
                         <Mail size={16} className="text-gs-green" />
                       </div>
                       <div>
                         <p className="text-xs text-gs-slate">Email</p>
-                        <p className="text-sm font-medium text-gs-charcoal group-hover:text-gs-green transition-colors">info.gscomply@gmail.com</p>
+                        <p className="text-sm font-medium text-gs-charcoal group-hover:text-gs-green transition-colors">support@gscomply.com</p>
                       </div>
                     </a>
                   </li>
