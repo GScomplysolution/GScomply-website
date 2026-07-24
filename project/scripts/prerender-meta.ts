@@ -53,7 +53,7 @@ import blogPosts from '../src/data/blogPosts';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = 'https://gscomply.vercel.app';
+const SITE_URL = 'https://gscomply.com';
 const SITE_NAME = 'GS Comply Solutions';
 const DEFAULT_IMAGE = '/images/GScomply_Logo.jpeg';
 const DIST_DIR = path.resolve(__dirname, '../dist');
