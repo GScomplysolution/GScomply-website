@@ -8,7 +8,7 @@ export default function About() {
     <>
       <SEO
         title="About Us"
-        description="GS Comply Solutions is a team of regulatory experts helping businesses navigate product compliance worldwide. Learn about our mission, values, and commitment to compliance excellence."
+        description="GS Comply Solutions is a team of regulatory experts helping businesses navigate product compliance worldwide. Learn about our mission and values."
         keywords="compliance consulting team, regulatory experts, product compliance company, REACH RoHS consultants, sustainability advisors"
         canonicalPath="/about"
         type="website"

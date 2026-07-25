@@ -17,8 +17,28 @@ export interface SEOProps {
 }
 
 const SITE_NAME = 'GS Comply Solutions';
-const SITE_URL = 'https://gscomply.vercel.app';
+const SITE_URL = 'https://gscomply.com';
 const DEFAULT_IMAGE = '/images/GScomply_Logo.jpeg';
+const MAX_META_DESCRIPTION = 160;
+
+/**
+ * Google typically truncates meta descriptions around 155-160 characters.
+ * Several of our descriptions (especially data-driven ones reused as on-page
+ * body copy — service/platform descriptions, blog excerpts) run longer than
+ * that by design, since they're also displayed as hero text or card copy.
+ * Rather than shortening that shared source text (which would make the
+ * on-page copy feel clipped), we truncate ONLY the meta-tag value here, at
+ * the last word boundary before the limit, so the tag itself always
+ * satisfies the 160-character guideline regardless of the source string.
+ */
+export function truncateDescription(text: string, max = MAX_META_DESCRIPTION): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(' ');
+  const safeCut = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[\s.,;:—–-]+$/, '');
+  return `${safeCut}…`;
+}
 
 function setMeta(property: string, content: string, attr: 'name' | 'property' = 'name') {
   let el = document.querySelector(`meta[${attr}="${property}"]`) as HTMLMetaElement | null;
@@ -58,11 +78,12 @@ export default function SEO({
   const canonical = canonicalPath ? `${SITE_URL}${canonicalPath}` : `${SITE_URL}${location.pathname}`;
   const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
   const imageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`;
+  const metaDescription = truncateDescription(description);
 
   useEffect(() => {
     document.title = fullTitle;
 
-    setMeta('description', description);
+    setMeta('description', metaDescription);
     if (keywords) setMeta('keywords', keywords);
     setMeta('robots', noIndex ? 'noindex, nofollow' : 'index, follow');
     setMeta('author', SITE_NAME);
@@ -70,7 +91,7 @@ export default function SEO({
     setLink('canonical', canonical);
 
     setMeta('og:title', fullTitle, 'property');
-    setMeta('og:description', description, 'property');
+    setMeta('og:description', metaDescription, 'property');
     setMeta('og:type', type, 'property');
     setMeta('og:url', canonical, 'property');
     setMeta('og:image', imageUrl, 'property');
@@ -87,13 +108,13 @@ export default function SEO({
 
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:title', fullTitle);
-    setMeta('twitter:description', description);
+    setMeta('twitter:description', metaDescription);
     setMeta('twitter:image', imageUrl);
     setMeta('twitter:image:alt', imageAlt);
     setMeta('twitter:site', '@GSComply');
 
     window.scrollTo(0, 0);
-  }, [fullTitle, description, keywords, canonical, noIndex, type, imageUrl, imageAlt, publishedTime, modifiedTime, author, section]);
+  }, [fullTitle, metaDescription, keywords, canonical, noIndex, type, imageUrl, imageAlt, publishedTime, modifiedTime, author, section]);
 
   return null;
 }

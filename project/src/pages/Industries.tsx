@@ -27,7 +27,7 @@ export default function Industries() {
     <>
       <SEO
         title="Industries We Serve"
-        description="Industry-specific compliance services for automotive, electronics, aerospace, medical devices, construction and more. Expert regulatory support tailored to your sector's requirements."
+        description="Industry-specific compliance services for automotive, electronics, aerospace, medical devices, construction and more — regulatory support for your sector."
         keywords="automotive compliance, electronics RoHS, aerospace REACH, medical device regulations, construction material compliance, industrial compliance services"
         canonicalPath="/industries"
         type="website"

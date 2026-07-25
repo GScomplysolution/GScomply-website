@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import CTABanner from '../components/CTABanner';
 import platforms from '../data/platforms';
 

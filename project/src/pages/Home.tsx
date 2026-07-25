@@ -31,7 +31,7 @@ export default function Home() {
     <>
       <SEO
         title="Global Product & Material Compliance Services"
-        description="GS Comply Solutions helps manufacturers navigate complex product compliance regulations worldwide — REACH, RoHS, PFAS, IMDS, SCIP and beyond. Expert compliance consulting for automotive, electronics, and industrial sectors."
+        description="GS Comply Solutions helps manufacturers navigate REACH, RoHS, PFAS, IMDS, SCIP and more — expert product compliance consulting for global industries."
         keywords="REACH compliance, RoHS compliance, PFAS restrictions, IMDS database, SCIP notification, product compliance consulting, material compliance, substance regulations"
         canonicalPath="/"
         type="website"

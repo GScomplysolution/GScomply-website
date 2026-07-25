@@ -110,7 +110,7 @@ export default function Services() {
     <>
       <SEO
         title="Compliance Services"
-        description="Complete product and material compliance services: REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65 and more. IMDS & SCIP platform submissions. LCA & PCF sustainability services."
+        description="Complete compliance services: REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65 and more, plus IMDS & SCIP submissions and LCA & PCF sustainability support."
         keywords="compliance services, REACH compliance, RoHS compliance, PFAS screening, IMDS submissions, SCIP database, product compliance consulting, substance regulations"
         canonicalPath="/services"
         type="website"

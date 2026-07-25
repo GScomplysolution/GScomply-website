@@ -27,8 +27,14 @@
  *      platform/blog slug, pulled live from the same src/data/*.ts files
  *      used by the app and by generate-sitemap.ts — so it never goes stale),
  *      clones that template and swaps in the route's real title, meta
- *      description, canonical URL, Open Graph tags, Twitter Card tags, and
- *      JSON-LD structured data.
+ *      description (word-truncated to <=160 chars — see truncateDescription
+ *      below), canonical URL, Open Graph tags, Twitter Card tags, and
+ *      JSON-LD structured data. It also writes a real <h1> + intro
+ *      paragraph into the otherwise-empty <div id="root"></div>, since a
+ *      pure CSR build ships an empty root and crawlers that don't execute
+ *      JS would otherwise see no heading at all. main.tsx uses
+ *      createRoot(...).render(...), not hydrateRoot, so React fully
+ *      replaces this fallback on mount — no hydration mismatch risk.
  *   3. Writes each snapshot to dist/<route>/index.html.
  *
  * Because Netlify (see public/_redirects) matches an exact static file
@@ -57,10 +63,28 @@ const SITE_URL = 'https://gscomply.com';
 const SITE_NAME = 'GS Comply Solutions';
 const DEFAULT_IMAGE = '/images/GScomply_Logo.jpeg';
 const DIST_DIR = path.resolve(__dirname, '../dist');
+const MAX_META_DESCRIPTION = 160;
+
+/**
+ * Mirrors src/components/SEO.tsx's truncateDescription — some source
+ * descriptions (services/platforms/blog excerpts) are intentionally longer
+ * because they're reused as on-page body copy. We truncate only the value
+ * written into the meta tag here, at a word boundary, so it always respects
+ * Google's ~160-character guideline without shortening the visible content.
+ */
+function truncateDescription(text: string, max = MAX_META_DESCRIPTION): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const lastSpace = cut.lastIndexOf(' ');
+  const safeCut = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).replace(/[\s.,;:—–-]+$/, '');
+  return `${safeCut}…`;
+}
 
 interface RouteMeta {
   routePath: string; // e.g. '/services/reach'
   title: string;
+  h1: string; // must match the <h1> rendered by the real React page for this route
   description: string;
   type: 'website' | 'article' | 'service';
   image?: string;
@@ -159,30 +183,34 @@ const STATIC_ROUTES: RouteMeta[] = [
   {
     routePath: '/',
     title: 'Global Product & Material Compliance Services',
+    h1: 'Global Compliance, Simplified.',
     description:
-      "GS Comply Solutions helps manufacturers navigate complex product compliance regulations worldwide — REACH, RoHS, PFAS, IMDS, SCIP and beyond. Expert compliance consulting for automotive, electronics, and industrial sectors.",
+      'GS Comply Solutions helps manufacturers navigate REACH, RoHS, PFAS, IMDS, SCIP and more — expert product compliance consulting for global industries.',
     type: 'website',
     structuredData: [organizationSchema(), websiteSchema()],
   },
   {
     routePath: '/industries',
     title: 'Industries We Serve',
+    h1: 'Compliance Expertise Across Every Industry',
     description:
-      "Industry-specific compliance services for automotive, electronics, aerospace, medical devices, construction and more. Expert regulatory support tailored to your sector's requirements.",
+      "Industry-specific compliance services for automotive, electronics, aerospace, medical devices, construction and more — regulatory support for your sector.",
     type: 'website',
     structuredData: [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Industries', path: '/industries' }])],
   },
   {
     routePath: '/services',
     title: 'Compliance Services',
+    h1: 'End-to-End Compliance & Sustainability Services',
     description:
-      'Complete product and material compliance services: REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65 and more. IMDS & SCIP platform submissions. LCA & PCF sustainability services.',
+      'Complete compliance services: REACH, RoHS, PFAS, GADSL, ELV, TSCA, Prop 65 and more, plus IMDS & SCIP submissions and LCA & PCF sustainability support.',
     type: 'website',
     structuredData: [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Services', path: '/services' }])],
   },
   {
     routePath: '/services/lca-pcf',
     title: 'Life Cycle Assessment (LCA) & Product Carbon Footprint (PCF) Services',
+    h1: 'Life Cycle Assessment & Product Carbon Footprint Services',
     description:
       'ISO 14044-compliant LCA and GHG Protocol-aligned PCF calculations. Support for CSRD Scope 3 reporting, EPD programs, and OEM carbon footprint requirements.',
     type: 'service',
@@ -197,24 +225,27 @@ const STATIC_ROUTES: RouteMeta[] = [
   {
     routePath: '/insights',
     title: 'Compliance Insights & Regulatory Updates',
+    h1: 'Compliance Insights & Regulatory Updates',
     description:
-      'Expert analysis on REACH, RoHS, PFAS, IMDS, SCIP and other regulatory developments. Stay ahead of global product compliance changes with our compliance insights.',
+      'Expert analysis on REACH, RoHS, PFAS, IMDS, SCIP and other regulatory developments — stay ahead of global product compliance changes.',
     type: 'website',
     structuredData: [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Insights', path: '/insights' }])],
   },
   {
     routePath: '/about',
     title: 'About Us',
+    h1: 'We Are GS Comply Solutions',
     description:
-      'GS Comply Solutions is a team of regulatory experts helping businesses navigate product compliance worldwide. Learn about our mission, values, and commitment to compliance excellence.',
+      'GS Comply Solutions is a team of regulatory experts helping businesses navigate product compliance worldwide. Learn about our mission and values.',
     type: 'website',
     structuredData: [],
   },
   {
     routePath: '/contact',
     title: 'Contact Us for Free Compliance Consultation',
+    h1: "Let's Talk Compliance",
     description:
-      'Get expert help with REACH, RoHS, PFAS, IMDS, SCIP and other product compliance regulations. Request a free consultation from GS Comply Solutions — we respond within 1 business day.',
+      'Get expert help with REACH, RoHS, PFAS, IMDS, SCIP and other compliance regulations. Request a free consultation — we respond within 1 business day.',
     type: 'website',
     structuredData: [],
   },
@@ -227,6 +258,7 @@ function buildDynamicRoutes(): RouteMeta[] {
     routes.push({
       routePath: `/services/${s.slug}`,
       title: `${s.acronym} - ${s.name}`,
+      h1: `${s.name} Compliance Services`,
       description: s.description,
       type: 'service',
       structuredData: [
@@ -244,6 +276,7 @@ function buildDynamicRoutes(): RouteMeta[] {
     routes.push({
       routePath: `/industries/${i.slug}`,
       title: `${i.name} Compliance Services`,
+      h1: `${i.name} Compliance Services`,
       description: i.shortDescription,
       type: 'service',
       structuredData: [
@@ -260,7 +293,9 @@ function buildDynamicRoutes(): RouteMeta[] {
     routes.push({
       routePath: `/platforms/${p.slug}`,
       title: `${p.acronym} - ${p.name}`,
-      description: p.description,
+      h1: p.name,
+      // Matches the exact string PlatformDetail.tsx passes to <SEO description=... />
+      description: `${p.description} Expert ${p.acronym} support from GS Comply Solutions.`,
       type: 'service',
       structuredData: [
         breadcrumbSchema([
@@ -276,6 +311,7 @@ function buildDynamicRoutes(): RouteMeta[] {
     routes.push({
       routePath: `/insights/${post.slug}`,
       title: post.title,
+      h1: post.title,
       description: post.excerpt,
       type: 'article',
       image: post.image,
@@ -304,18 +340,19 @@ function renderRoute(template: string, route: RouteMeta): string {
   const canonical = `${SITE_URL}${route.routePath}`;
   const title = fullTitle(route.title);
   const imageUrl = abs(route.image);
+  const metaDescription = truncateDescription(route.description);
   let html = template;
 
   html = setOrAdd(html, /<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`);
-  html = setOrAdd(html, /<meta name="description" content=".*?"\s*\/?>/s, `<meta name="description" content="${escapeHtml(route.description)}" />`);
+  html = setOrAdd(html, /<meta name="description" content=".*?"\s*\/?>/s, `<meta name="description" content="${escapeHtml(metaDescription)}" />`);
   html = setOrAdd(html, /<link rel="canonical"[^>]*>/s, `<link rel="canonical" href="${canonical}" />`);
   html = setOrAdd(html, /<meta property="og:title" content=".*?"\s*\/?>/s, `<meta property="og:title" content="${escapeHtml(title)}" />`);
-  html = setOrAdd(html, /<meta property="og:description" content=".*?"\s*\/?>/s, `<meta property="og:description" content="${escapeHtml(route.description)}" />`);
+  html = setOrAdd(html, /<meta property="og:description" content=".*?"\s*\/?>/s, `<meta property="og:description" content="${escapeHtml(metaDescription)}" />`);
   html = setOrAdd(html, /<meta property="og:url" content=".*?"\s*\/?>/s, `<meta property="og:url" content="${canonical}" />`);
   html = setOrAdd(html, /<meta property="og:type" content=".*?"\s*\/?>/s, `<meta property="og:type" content="${route.type}" />`);
   html = setOrAdd(html, /<meta property="og:image" content=".*?"\s*\/?>/s, `<meta property="og:image" content="${imageUrl}" />`);
   html = setOrAdd(html, /<meta name="twitter:title" content=".*?"\s*\/?>/s, `<meta name="twitter:title" content="${escapeHtml(title)}" />`);
-  html = setOrAdd(html, /<meta name="twitter:description" content=".*?"\s*\/?>/s, `<meta name="twitter:description" content="${escapeHtml(route.description)}" />`);
+  html = setOrAdd(html, /<meta name="twitter:description" content=".*?"\s*\/?>/s, `<meta name="twitter:description" content="${escapeHtml(metaDescription)}" />`);
 
   const jsonLdBlocks = route.structuredData
     .map((schema) => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`)
@@ -323,6 +360,15 @@ function renderRoute(template: string, route: RouteMeta): string {
   if (jsonLdBlocks) {
     html = html.replace('</head>', `  ${jsonLdBlocks}\n  </head>`);
   }
+
+  // Give crawlers and bots that don't execute JS (and Googlebot's initial
+  // HTML parse) a real <h1> and intro paragraph immediately, instead of the
+  // empty <div id="root"></div> that a pure CSR build ships by default.
+  // main.tsx uses createRoot(...).render(...) — NOT hydrateRoot — so React
+  // fully replaces this on mount; there's no hydration mismatch to worry
+  // about, this is purely a static fallback for non-JS crawlers.
+  const fallbackBody = `<h1>${escapeHtml(route.h1)}</h1>\n    <p>${escapeHtml(route.description)}</p>`;
+  html = html.replace('<div id="root"></div>', `<div id="root">\n    ${fallbackBody}\n  </div>`);
 
   return html;
 }

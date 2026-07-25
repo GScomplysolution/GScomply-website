@@ -84,7 +84,7 @@ export default function Insights() {
     <>
       <SEO
         title="Compliance Insights & Regulatory Updates"
-        description="Expert analysis on REACH, RoHS, PFAS, IMDS, SCIP and other regulatory developments. Stay ahead of global product compliance changes with our compliance insights."
+        description="Expert analysis on REACH, RoHS, PFAS, IMDS, SCIP and other regulatory developments — stay ahead of global product compliance changes."
         keywords="compliance blog, regulatory news, REACH updates, RoHS guidance, PFAS regulations, IMDS tips, compliance best practices"
         canonicalPath="/insights"
         type="website"
