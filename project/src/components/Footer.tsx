@@ -99,10 +99,10 @@ export default function Footer() {
                 <Linkedin size={16} />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://Instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Twitter / X"
+                aria-label="Instagram"
                 className="p-2 rounded-lg bg-white/10 hover:bg-gs-green transition-colors duration-200"
               >
                 <Twitter size={16} />
@@ -165,15 +165,15 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Contact Us</h3>
             <ul className="space-y-3 mb-6">
               <li>
-                <a href="mailto:info.gscomply@gmail.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
+                <a href="mailto:contact@gscomply.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
                   <Mail size={14} className="flex-shrink-0 text-gs-mint" />
-                  info.gscomply@gmail.com
+                  contact@gscomply.com
                 </a>
               </li>
               <li>
-                <a href="tel:+917010372791" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
+                <a href="tel:+917812807758" className="flex items-center gap-2 text-sm text-gray-400 hover:text-gs-mint transition-colors">
                   <Phone size={14} className="flex-shrink-0 text-gs-mint" />
-                  +91 70103 72791
+                  +91 78128 07758
                 </a>
               </li>
               <li className="text-sm text-gray-400">
