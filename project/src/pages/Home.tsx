@@ -31,8 +31,8 @@ export default function Home() {
     <>
       <SEO
         title="Global Product & Material Compliance Services"
-        description="GS Comply Solutions helps manufacturers navigate REACH, RoHS, PFAS, IMDS, SCIP and more — expert product compliance consulting for global industries."
-        keywords="REACH compliance, RoHS compliance, PFAS restrictions, IMDS database, SCIP notification, product compliance consulting, material compliance, substance regulations"
+        description="GS Comply Solutions helps manufacturers navigate IMDS, REACH, RoHS, PFAS, SCIP and more expert product compliance consulting for global industries."
+        keywords="IMDS database, REACH compliance, RoHS compliance, PFAS restrictions, , SCIP notification, product compliance consulting, material compliance, substance regulations"
         canonicalPath="/"
         type="website"
       />
@@ -377,11 +377,11 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-gs-slate mb-6 text-sm font-medium">Or reach us directly</p>
           <div className="flex flex-wrap justify-center gap-6">
-            <a href="mailto:info.gscomply@gmail.com" className="flex items-center gap-2 text-gs-charcoal hover:text-gs-green transition-colors">
-              <span className="text-gs-green">✉</span><span className="text-sm">info.gscomply@gmail.com</span>
+            <a href="mailto:support@gscomply.com" className="flex items-center gap-2 text-gs-charcoal hover:text-gs-green transition-colors">
+              <span className="text-gs-green">✉</span><span className="text-sm">support@gscomply.com</span>
             </a>
-            <a href="tel:+917010372791" className="flex items-center gap-2 text-gs-charcoal hover:text-gs-green transition-colors">
-              <span className="text-gs-green">📞</span><span className="text-sm">+91 70103 72791</span>
+            <a href="tel:+917812807758" className="flex items-center gap-2 text-gs-charcoal hover:text-gs-green transition-colors">
+              <span className="text-gs-green">📞</span><span className="text-sm">+91 78128 007758</span>
             </a>
           </div>
           <p className="text-xs text-gs-slate mt-6">We typically respond within 1 business day.</p>
