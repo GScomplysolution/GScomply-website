@@ -381,7 +381,7 @@ export default function Home() {
               <span className="text-gs-green">✉</span><span className="text-sm">support@gscomply.com</span>
             </a>
             <a href="tel:+917812807758" className="flex items-center gap-2 text-gs-charcoal hover:text-gs-green transition-colors">
-              <span className="text-gs-green">📞</span><span className="text-sm">+91 78128 007758</span>
+              <span className="text-gs-green">📞</span><span className="text-sm">+91 78128 07758</span>
             </a>
           </div>
           <p className="text-xs text-gs-slate mt-6">We typically respond within 1 business day.</p>
