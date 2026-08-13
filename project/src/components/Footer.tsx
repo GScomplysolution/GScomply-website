@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Linkedin, Twitter, ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
+import { Mail, Phone, Linkedin, Instagram, ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { prefetchPage } from '../App';
 import type { PageName } from '../App';
@@ -90,7 +90,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/company/gscomply-solutions/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -99,13 +99,13 @@ export default function Footer() {
                 <Linkedin size={16} />
               </a>
               <a
-                href="https://Instagram.com"
+                href="https://www.instagram.com/gscomply_solutions?igsh=cDhoczZ0NGI3dHBm"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="p-2 rounded-lg bg-white/10 hover:bg-gs-green transition-colors duration-200"
               >
-                <Twitter size={16} />
+                <Instagram size={16} />
               </a>
             </div>
           </div>
